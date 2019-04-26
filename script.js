@@ -4,39 +4,40 @@ document.addEventListener('DOMContentLoaded',function(){
   req.send();
   req.onload=function(){
     json=JSON.parse(req.responseText);
-    var data = json.children[1].children //array of DRAMA movie objects
+    var data = json.children
     
-    const w = 500
-    const h = 100
+    const w = 700
+    const h = 200
     const padding = 10
     
         // Adds the svg canvas
-    const svg=d3.select("a")
+    const svg=d3.select(".graph")
                 .append("svg")
                 .attr("width", w)
                 .attr("height", h)
+                .style("background", "#fff")
     
      //Add the rectangles (bars)
     svg.selectAll("rect")
         .data(data)
         .enter()
         .append("rect")
-        .attr("width", 3)
-        .attr("height", (d, i) => {return d.value/1000000})
-        .attr("x", (d, i) => {return (i*3) + padding})
-        .attr("y", (d, i) => {return h - 2*padding - d.value/1000000})
+        .attr("width", (d, i) => {return d.children.length})
+        .attr("height", 200)
+        .attr("x", (d, i) => {return (i*100)})
+        .attr("y", (d, i) => {return padding})
         .style("fill", (d) => {
-          if(d.category === "Action"){
+          if(d.name === "Adventure"){
             return ("red")
-          }else if(d.category === "Adventure"){
+          }else if(d.name === "Action"){
             return("pink")
-          }else if(d.category === "Comedy"){
+          }else if(d.name === "Comedy"){
             return("orange")
-          }else if(d.category === "Drama"){
+          }else if(d.name === "Drama"){
             return("yellow")
-          }else if(d.category === "Animation"){
+          }else if(d.name === "Animation"){
             return("blue")
-          }else if(d.category === "Family"){
+          }else if(d.name === "Family"){
             return("green")
           }else{
             return("purple")
