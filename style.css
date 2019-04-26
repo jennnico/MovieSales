@@ -7,3 +7,10 @@
 #title{
   font-family: righteous, sans-serif;
 }
+
+body{
+  background: grey;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
