@@ -1,50 +1,62 @@
+//resource: https://www.d3-graph-gallery.com/graph/treemap_json.html
+
 document.addEventListener('DOMContentLoaded',function(){
   req=new XMLHttpRequest();
   req.open("GET",'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json',true);
   req.send();
   req.onload=function(){
     json=JSON.parse(req.responseText);
-    var data = json.children
+    var data = json
     
-    const w = 700
-    const h = 200
-    const padding = 10
+    // Here the size of each leave is given in the 'value' field in input data
+    var root = d3.hierarchy(data).sum(function(d){ return d.value})
+
+ // set the dimensions and margins of the graph
+var margin = {top: 10, right: 10, bottom: 10, left: 10},
+  width = 445 - margin.left - margin.right,
+  height = 445 - margin.top - margin.bottom;
     
-        // Adds the svg canvas
-    const svg=d3.select(".graph")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h)
-                .style("background", "#fff")
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+            .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+            .style("background", "white")
+            .append("g")
+              .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")")
+            
+ // Then d3.treemap computes the position of each element of the hierarchy 
+ d3.treemap()
+    .size([width, height])
+    .padding(0)
+    (root)
+
+      // use this information to add rectangles:
+  svg
+    .selectAll("rect")
+    .data(root.leaves())
+    .enter()
+    .append("rect")
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "black")
+      .style("fill", "slateblue")
     
-     //Add the rectangles (bars)
-    svg.selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("width", (d, i) => {return d.children.length})
-        .attr("height", 200)
-        .attr("x", (d, i) => {return (i*100)})
-        .attr("y", (d, i) => {return padding})
-        .style("fill", (d) => {
-          if(d.name === "Adventure"){
-            return ("red")
-          }else if(d.name === "Action"){
-            return("pink")
-          }else if(d.name === "Comedy"){
-            return("orange")
-          }else if(d.name === "Drama"){
-            return("yellow")
-          }else if(d.name === "Animation"){
-            return("blue")
-          }else if(d.name === "Family"){
-            return("green")
-          }else{
-            return("purple")
-          }
-    })
-        .attr("class", "bar")
-        .append("title")
-        .text(d => d.name + ", " + d.category + ": $" + d.value)
+      // and to add the text labels
+  svg
+    .selectAll("text")
+    .data(root.leaves())
+    .enter()
+    .append("text")
+      .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
+      .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
+      .text(function(d){ return d.data.name })
+      .attr("font-size", "15px")
+      .attr("fill", "white")
+    
+ 
     }
 })
