@@ -8,36 +8,34 @@ document.addEventListener('DOMContentLoaded',function(){
     json=JSON.parse(req.responseText);
     var data = json
     
-    // Here the size of each leave is given in the 'value' field in input data
-    var root = d3.hierarchy(data).sum(function(d){ return d.value})
+  // Here the size of each leave is given in the 'value' field in input data
+  var root = d3.hierarchy(data).sum(function(d){ return d.value})
 
- // set the dimensions and margins of the graph
-var margin = {top: 10, right: 10, bottom: 10, left: 10},
-  width = 1000 - margin.left - margin.right,
-  height = 345 - margin.top - margin.bottom;
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+    width = 1200 - margin.left - margin.right,
+    height = 345 - margin.top - margin.bottom;
     
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-            .append("svg")
+  // append the svg object to the body of the page
+  var svg = d3.select("#my_dataviz")
+              .append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
-            .style("background", "white")
-            .append("g")
+              .append("g")
               .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")")
             
- // Then d3.treemap computes the position of each element of the hierarchy 
- d3.treemap()
-    .size([width, height])
-    .padding(0)
-    (root)
+  // Then d3.treemap computes the position of each element of the hierarchy 
+  d3.treemap()
+     .size([width, height])
+     .padding(0)
+     (root)
     
-        // Define the div for the tooltip
-    var div = d3.select("#my_dataviz").append("div")	
-                .attr("class", "tooltip")				
-                .style("opacity", 0);
+  // Define the div for the tooltip
+  var div = d3.select("#my_dataviz").append("div")	
+              .attr("id", "tooltip")				
+              .style("opacity", 0);
 
- 
   // use this information to add rectangles:
   svg
     .selectAll("rect")
@@ -48,8 +46,7 @@ var svg = d3.select("#my_dataviz")
       .attr('y', function (d) { return d.y0; })
       .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
-      .style("stroke", "black")
-      .attr("class", "moviebox")
+      .attr("class", "tile")
       .style("fill", (d) => {
            if (d.data.category === "Action"){ //2.8, navy
                     return ("#0200ad")
@@ -66,23 +63,27 @@ var svg = d3.select("#my_dataviz")
            }else if(d.data.category === "Biography"){
                     return("#ba0000")
            }else{return("black")}
-  })
-    .on("mouseover", function(d) {
-        div.style("opacity", 1)
-           .html(d.data.name + ": $" + d.data.value)
-                  .style("left", (d3.event.pageX + 10) + "px")		
-               .style("top", (d3.event.pageY - 28) + "px");
-  })
+      })//style --- fill colors
+      .on("mouseover", function(d) {
+           div.style("opacity", 1)
+              .html(d.data.name + ": $" + d.data.value)
+              .style("left", (d3.event.pageX) + "px")		
+              .style("top", (d3.event.pageY) + "px");
+      })//on mouseover
     
   // and to add the text labels
-  svg
+  svg 
     .selectAll("text")
     .data(root.leaves())
+     //.data(function(d) {return root.leaves().data.name.split(/(: )/g); })
     .enter()
     .append("text")
       .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
       .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
       .text(function(d){ return d.data.name})
+   // .text(function(d){ return d})
       .attr("class", "movie")
+
     }
 })
+
