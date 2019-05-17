@@ -14,20 +14,54 @@ body{
   height: 100%;
   text-align: center;
   
-  .moviebox{
-   // overflow: hidden;
+  .tile{
+    padding: 20px;
+    overflow: hidden;
+    stroke: black;
+    
+    // &:hover{fill: #333 !important;}
   }
   
-  .tooltip{
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 5px;
+  
+  #tooltip{
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;	
+    color: #000;
+    padding: 15px;
+    position: absolute;
   }
   
   .movie{
     fill: #fff;
     font-family: arial;
-    font-size: 9px;
+    font-size: 8px;
+    width: 10%;
+    overflow: hidden;
+  }
+  
+  
+  #legend{
+    display: flex;
+    justify-content: space-around;
+    margin: 30px auto;
+    width: 1200px;
+    
+    .color{
+      height: 15px;
+      margin: auto;
+      width: 15px;
+    }
+    
+    .legend-item{
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    p{
+      margin: 10px auto;
+    }
   }
 }
 
